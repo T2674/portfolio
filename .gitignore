@@ -1,0 +1,5 @@
+# 手机离线预览包（不入库）
+作品集-手机预览版.zip
+.DS_Store
+Thumbs.db
+node_modules/
