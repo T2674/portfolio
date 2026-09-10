@@ -85,16 +85,10 @@
   const caption = $('#reelCaption');
   const flash = $('#flash');
 
-  // 胶片内容：片头片（倒数 3·2·1）+ 作品格
+  // 胶片内容：作品格（无片头倒数）
   const spacer = document.createElement('div');
   spacer.className = 'frame-spacer';
   strip.appendChild(spacer);
-  [3, 2, 1].forEach(n => {
-    const d = document.createElement('div');
-    d.className = 'frame frame-leader';
-    d.innerHTML = '<span class="leader-num">' + n + '</span>';
-    strip.appendChild(d);
-  });
   WORKS.forEach((w, i) => {
     const d = document.createElement('div');
     d.className = 'frame';
@@ -165,14 +159,9 @@
     if (reel.paused) return;
     if (reel.index >= reel.all.length){ finishCycle(); return; }
     const f = reel.all[reel.index];
-    if (f.classList.contains('frame-leader')){
-      const n = $('.leader-num', f);
-      caption.textContent = '倒数 ' + (n ? n.textContent : '') + ' · 准备放映';
-    } else {
-      const idx = Number(f.dataset.index);
-      caption.textContent = 'FRAME ' + String(reel.index - 2).padStart(2, '0') + ' / ' + WORKS.length +
-                            ' · ' + (WORKS[idx] ? WORKS[idx].title : '');
-    }
+    const idx = Number(f.dataset.index);
+    caption.textContent = 'FRAME ' + String(reel.index + 1).padStart(2, '0') + ' / ' + WORKS.length +
+                          ' · ' + (WORKS[idx] ? WORKS[idx].title : '');
     moveTo(reel.index, () => {
       if (reel.paused) return;
       f.classList.add('lit');
