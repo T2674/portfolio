@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>童帅 · 推开我的世界 — 动效作品集</title>
-<meta name="description" content="一镜到底 · 推开我的世界：动画 / 插画 / 动效作品集" />
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚪</text></svg>" />
+<title>童帅 · 放映我的世界 — 动效作品集</title>
+<meta name="description" content="一卷胶片，一段故事：角色沿胶片走进他的作品世界。动画 / 插画 / 动效作品集。" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎞</text></svg>" />
 <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -18,7 +18,7 @@
 <header class="topbar" id="topbar">
   <a class="brand" href="#hero" data-nav>
     <span class="brand-avatar"><img src="assets/refs/character-half.png" alt="角色头像" /></span>
-    <span class="brand-text">童帅<em>· 推开我的世界</em></span>
+    <span class="brand-text">童帅<em>· 一卷胶片</em></span>
   </a>
   <nav class="nav" aria-label="主导航">
     <a href="#about" data-nav>关于我</a>
@@ -29,43 +29,37 @@
   </nav>
 </header>
 
-<!-- 顶部开门进度条 -->
+<!-- 顶部放映进度条 -->
 <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
 
 <main>
-  <!-- ============ 一镜到底 · 推开我的世界 ============ -->
+  <!-- ============ 一镜到底 · 一卷胶片 ============ -->
   <section class="hero" id="hero">
     <div class="hero-inner">
 
-      <p class="eyebrow" data-hero>动效 · 插画 · 动画 — 把想象力做成看得见的画面</p>
-      <h1 class="hero-title" data-hero>推开<span class="accent">我的</span>世界</h1>
+      <p class="eyebrow" data-hero>动效 · 插画 · 动画 — 一卷胶片，一段故事</p>
+      <h1 class="hero-title" data-hero>放映<span class="accent">我的</span>世界</h1>
 
-      <!-- 大门 -->
-      <div class="door-stage" id="doorStage" aria-label="作品集开场大门">
-        <div class="door-inside">
-          <figure class="poster-card">
-            <img src="assets/refs/character-green.png" alt="角色：走进我的世界" id="posterImg" />
-            <figcaption>角色 · 童帅的虚拟分身</figcaption>
-          </figure>
-          <p class="welcome" id="welcomeText">欢迎来到我的世界 ↓</p>
+      <!-- 胶片舞台 -->
+      <div class="reel-stage" id="reelStage" aria-label="作品集片头：一卷胶片">
+        <div class="reel-viewport">
+          <div class="reel-grain" aria-hidden="true"></div>
+          <div class="film-3d">
+            <div class="film-strip" id="filmStrip"><!-- JS 渲染胶片格 --></div>
+          </div>
+          <div class="walker" id="walker" aria-hidden="true">
+            <img src="assets/refs/character-green.png" alt="" />
+          </div>
+          <p class="reel-caption" id="reelCaption">胶片已装填 · 等你按下放映键</p>
         </div>
-        <div class="door-glow" aria-hidden="true"></div>
-        <div class="door door--left" aria-hidden="true">
-          <span class="door-plank"></span>
-          <span class="door-handle handle-l"></span>
-        </div>
-        <div class="door door--right" aria-hidden="true">
-          <span class="door-plank"></span>
-          <span class="door-handle handle-r"></span>
-        </div>
-        <div class="door-seam" aria-hidden="true"></div>
+        <div class="reel-beam" aria-hidden="true"></div>
       </div>
 
-      <div class="door-actions">
+      <div class="reel-actions">
         <button class="btn-open" id="btnOpen" type="button" disabled>
-          <span class="btn-open-text">正在加载我的世界…</span>
+          <span class="btn-open-text">正在装载胶片…</span>
         </button>
-        <p class="hint" data-hero><span class="hint-arrow">↓</span> 或向下滚动，一起走进来</p>
+        <p class="hint" data-hero><span class="hint-arrow">↓</span> 或向下滚动，直接走进我的世界</p>
       </div>
 
     </div>
@@ -89,8 +83,8 @@
         </div>
 
         <div class="about-body reveal">
-          <p class="lead">我相信好的开场，是一次<b>邀请</b>：</p>
-          <p>把观众带进画面里，让他们自己推开那扇门。这个作品集没有目录，只有一条一直向前的路——从角色设定、分镜脚本，到动态画面与 AI 辅助动画，希望你在每一格里，都能看见我对“动起来的故事”的喜欢。</p>
+          <p class="lead">我相信好的开场，就是一格一格的<b>推进</b>：</p>
+          <p>胶片往前走，画面才有生命。这个作品集像一卷还在放映的胶片——从角色设定、分镜脚本，到动态画面与 AI 辅助动画，希望你在每一格里，都能看见我对“动起来的故事”的喜欢。</p>
           <ul class="about-list">
             <li>角色 / 世界观设定</li>
             <li>分镜与叙事节奏</li>
@@ -146,7 +140,7 @@
   <section class="section works" id="works">
     <div class="container">
       <p class="sec-no">03</p>
-      <h2 class="sec-title reveal">作品 · 我的世界切片</h2>
+      <h2 class="sec-title reveal">作品 · 我的胶片格</h2>
       <p class="sec-sub reveal">点击任意卡片可放大查看。视频 / 毕设项目可直接替换下方卡片。</p>
 
       <div class="work-grid" id="workGrid"><!-- JS 渲染 --></div>
@@ -157,7 +151,7 @@
   <section class="section contact" id="contact">
     <div class="container">
       <p class="sec-no">04</p>
-      <h2 class="sec-title reveal">一起推开下一扇门？</h2>
+      <h2 class="sec-title reveal">下一卷胶片，一起拍？</h2>
       <p class="contact-text reveal">如果你也在找一位能让角色和故事“动起来”的创作者，欢迎随时找我聊聊。</p>
       <div class="contact-actions reveal">
         <a class="btn-main" href="mailto:hello@example.com">✉️ 发送邮件</a>
@@ -172,7 +166,7 @@
 </main>
 
 <footer class="footer">
-  <p>© 2026 童帅 · 一镜到底，推开我的世界</p>
+  <p>© 2026 童帅 · 一卷胶片，放映我的世界</p>
 </footer>
 
 <!-- 左侧滚动进度（跟随角色走进世界） -->
@@ -199,6 +193,9 @@
   </figure>
   <button class="lb-nav lb-next" id="lbNext" type="button" aria-label="下一个">›</button>
 </div>
+
+<!-- 放映结束的爆光 -->
+<div class="flash" id="flash" aria-hidden="true"></div>
 
 <script src="js/main.js"></script>
 </body>
