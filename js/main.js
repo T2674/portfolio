@@ -7,9 +7,6 @@
 
   /* ---------- 作品数据：在这里替换/增删你的作品 ---------- */
       const WORKS = [
-      { group:'毕业动画', type:'video', video:'assets/videos/video-03.mp4', src:'assets/works/video-poster-03.webp', title:'毕业动画《光影传承》', tag:'动画短片 · 视频', orient:'landscape', desc:'毕业设计动画短片，时长 2 分 45 秒，点击播放。' },
-      { group:'精品漫剧', type:'video', video:'assets/videos/video-02.mp4', src:'assets/works/video-poster-02.webp', title:'精品漫剧 01',           tag:'AI 漫剧 · 视频', orient:'portrait',  desc:'竖屏 AI 漫剧，时长 1 分 22 秒，点击播放。' },
-      { group:'精品漫剧', type:'video', video:'assets/videos/video-01.mp4', src:'assets/works/video-poster-01.webp', title:'精品漫剧 02',           tag:'AI 漫剧 · 视频', orient:'landscape', desc:'AI 漫剧片段，时长 54 秒，点击播放。' },
       { group:'厚涂 · 插画', src:'assets/works/paint-01.webp',  title:'厚涂作品 01',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
       { group:'厚涂 · 插画', src:'assets/works/paint-02.webp',  title:'厚涂作品 02',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
       { group:'厚涂 · 插画', src:'assets/works/paint-03.webp',  title:'厚涂作品 03',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
