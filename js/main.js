@@ -7,18 +7,18 @@
 
   /* ---------- 作品数据：在这里替换/增删你的作品 ---------- */
       const WORKS = [
-      { type:'video', video:'assets/videos/video-03.mp4', src:'assets/works/video-poster-03.jpg', title:'毕业动画《光影传承》', tag:'动画短片 · 视频', orient:'landscape', desc:'毕业设计动画短片，时长 2 分 45 秒，点击播放。' },
-      { type:'video', video:'assets/videos/video-02.mp4', src:'assets/works/video-poster-02.jpg', title:'精品漫剧 01',           tag:'AI 漫剧 · 视频', orient:'portrait',  desc:'竖屏 AI 漫剧，时长 1 分 22 秒，点击播放。' },
-      { type:'video', video:'assets/videos/video-01.mp4', src:'assets/works/video-poster-01.jpg', title:'精品漫剧 02',           tag:'AI 漫剧 · 视频', orient:'landscape', desc:'AI 漫剧片段，时长 54 秒，点击播放。' },
-      { src:'assets/works/paint-01.jpg',  title:'厚涂作品 01',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
-      { src:'assets/works/paint-02.jpg',  title:'厚涂作品 02',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
-      { src:'assets/works/paint-03.jpg',  title:'厚涂作品 03',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
-      { src:'assets/works/model-01.jpg',  title:'建模作品 01',        tag:'3D 建模',     orient:'square',    desc:'3D 建模作品，点击可放大查看。' },
-      { src:'assets/works/model-02.jpg',  title:'建模作品 02',        tag:'3D 建模',     orient:'square',    desc:'3D 建模作品，点击可放大查看。' },
-      { src:'assets/works/manhua-01.jpg', title:'AI 漫剧 · 画面 01',  tag:'AI 漫剧',     orient:'portrait',  desc:'AI 漫剧项目画面，点击可放大查看。' },
-      { src:'assets/works/manhua-02.jpg', title:'AI 漫剧 · 画面 02',  tag:'AI 漫剧',     orient:'portrait',  desc:'AI 漫剧项目画面，点击可放大查看。' },
-      { src:'assets/works/manhua-03.jpg', title:'AI 漫剧 · 场景 03',  tag:'AI 漫剧',     orient:'landscape', desc:'AI 漫剧项目场景，点击可放大查看。' },
-      { src:'assets/works/manhua-04.jpg', title:'AI 漫剧 · 场景 04',  tag:'AI 漫剧',     orient:'landscape', desc:'AI 漫剧项目场景，点击可放大查看。' }
+      { type:'video', video:'assets/videos/video-03.mp4', src:'assets/works/video-poster-03.webp', title:'毕业动画《光影传承》', tag:'动画短片 · 视频', orient:'landscape', desc:'毕业设计动画短片，时长 2 分 45 秒，点击播放。' },
+      { type:'video', video:'assets/videos/video-02.mp4', src:'assets/works/video-poster-02.webp', title:'精品漫剧 01',           tag:'AI 漫剧 · 视频', orient:'portrait',  desc:'竖屏 AI 漫剧，时长 1 分 22 秒，点击播放。' },
+      { type:'video', video:'assets/videos/video-01.mp4', src:'assets/works/video-poster-01.webp', title:'精品漫剧 02',           tag:'AI 漫剧 · 视频', orient:'landscape', desc:'AI 漫剧片段，时长 54 秒，点击播放。' },
+      { src:'assets/works/paint-01.webp',  title:'厚涂作品 01',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
+      { src:'assets/works/paint-02.webp',  title:'厚涂作品 02',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
+      { src:'assets/works/paint-03.webp',  title:'厚涂作品 03',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
+      { src:'assets/works/model-01.webp',  title:'建模作品 01',        tag:'3D 建模',     orient:'square',    desc:'3D 建模作品，点击可放大查看。' },
+      { src:'assets/works/model-02.webp',  title:'建模作品 02',        tag:'3D 建模',     orient:'square',    desc:'3D 建模作品，点击可放大查看。' },
+      { src:'assets/works/manhua-01.webp', title:'AI 漫剧 · 画面 01',  tag:'AI 漫剧',     orient:'portrait',  desc:'AI 漫剧项目画面，点击可放大查看。' },
+      { src:'assets/works/manhua-02.webp', title:'AI 漫剧 · 画面 02',  tag:'AI 漫剧',     orient:'portrait',  desc:'AI 漫剧项目画面，点击可放大查看。' },
+      { src:'assets/works/manhua-03.webp', title:'AI 漫剧 · 场景 03',  tag:'AI 漫剧',     orient:'landscape', desc:'AI 漫剧项目场景，点击可放大查看。' },
+      { src:'assets/works/manhua-04.webp', title:'AI 漫剧 · 场景 04',  tag:'AI 漫剧',     orient:'landscape', desc:'AI 漫剧项目场景，点击可放大查看。' }
     ];
 
 
@@ -54,7 +54,7 @@
   /* ---------- 预加载（放映前） ---------- */
   const btnOpen = $('#btnOpen');
   const btnText = $('.btn-open-text', btnOpen);
-  const assets = ['assets/refs/character-green.jpg', 'assets/refs/character-half.jpg']
+  const assets = ['assets/refs/character-green.webp', 'assets/refs/character-half.webp']
     .concat(WORKS.map(w => w.src));
   let loaded = 0;
   const total = assets.length;

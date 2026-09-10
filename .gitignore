@@ -6,3 +6,5 @@
 .DS_Store
 Thumbs.db
 node_modules/
+# 本地工作规则（含本机路径，不公开）
+AGENTS.md
