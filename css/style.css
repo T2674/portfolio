@@ -471,3 +471,57 @@ body.ready .hint{opacity:1;transform:none}
 .work-group-title::after{
   content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(63,227,145,.35),transparent);
 }
+
+/* ============ 打印 / 导出 PDF 专用 ============ */
+@page { size: A4; margin: 12mm; }
+@media print{
+  #stars,.vignette,.topbar,.progress,.rail,.reel-stage,.reel-actions,.hint,.lightbox,.flash{display:none !important}
+  body{background:#fff !important;color:#14181a !important}
+  main,.footer{position:static !important}
+  .hero{min-height:auto !important;padding:0 0 6mm !important}
+  .hero-inner{gap:4mm}
+  .eyebrow{opacity:1 !important;color:#0a7a4a !important;font-size:9pt;letter-spacing:.2em}
+  .hero-title{opacity:1 !important;transform:none !important;font-size:30pt;color:#101314 !important}
+  .hero-title .accent{-webkit-text-fill-color:#0a7a4a !important;color:#0a7a4a !important;background:none !important}
+  .section{padding:6mm 0 !important}
+  .container{max-width:100% !important}
+  .sec-no{color:#0a7a4a !important}
+  .sec-title{font-size:16pt;transform:none !important}
+  .sec-sub{color:#5c6b63 !important}
+  .reveal{opacity:1 !important;transform:none !important}
+  .about-grid{display:grid;grid-template-columns:40mm 1fr;gap:8mm;align-items:start}
+  .about-card{align-items:flex-start}
+  .avatar-ring{width:40mm;animation:none !important}
+  .avatar-ring img{animation:none !important}
+  .float-chip{position:static !important;display:inline-block;margin:2mm 2mm 0 0;animation:none !important;
+    background:#f2f6f3 !important;color:#14603c !important;border:1px solid #cfe0d6 !important;backdrop-filter:none !important}
+  .about-body p,.about-list li{color:#2b332e !important}
+  .about-list{grid-template-columns:1fr 1fr}
+  .skill-grid{grid-template-columns:repeat(2,1fr);gap:4mm}
+  .skill-card,.tools{break-inside:avoid;page-break-inside:avoid;background:#f7f9f7 !important;border:1px solid #dbe3dd !important}
+  .skill-card p{color:#4a5852 !important}
+  .skill-idx{color:#0a7a4a !important;border-color:#bcd8c7 !important}
+  .tools-label{color:#5c6b63 !important}
+  .tool-chips span{color:#2b332e !important;border:1px solid #dbe3dd !important;background:#f7f9f7 !important}
+  .work-group-title{color:#101314 !important;font-size:12pt;margin-bottom:3mm}
+  .work-group-title::after{background:#dbe3dd !important}
+  .work-grid{grid-template-columns:repeat(2,1fr) !important;gap:4mm !important}
+  .work-card{break-inside:avoid;page-break-inside:avoid;border:1px solid #dbe3dd !important;transform:none !important;box-shadow:none !important}
+  .work-media{background:#f2f4f2 !important}
+  .work-media video{display:block !important}
+  .work-info{position:static !important;background:none !important;padding:2mm 3mm 3mm !important}
+  .work-tag{color:#0a7a4a !important}
+  .work-title{color:#14181a !important;font-size:10pt}
+  .play-badge{display:none !important}
+  .contact-text{color:#2b332e !important}
+  .contact-mail .mail-label{color:#5c6b63 !important}
+  .contact-mail a{color:#0a7a4a !important;border-bottom:1px solid #0a7a4a;font-size:13pt}
+  .footer{border-top:1px solid #dbe3dd !important;color:#6b7a72 !important;padding-top:4mm}
+}
+
+/* 打印时禁用标题的渐变/阴影特效（避免 PDF 文本层重复与栅格化） */
+@media print{
+  .hero-title{text-shadow:none !important;background:none !important}
+  .hero-title .accent{background:none !important;-webkit-background-clip:border-box !important;background-clip:border-box !important;
+    -webkit-text-fill-color:#0a7a4a !important;color:#0a7a4a !important;text-shadow:none !important}
+}
