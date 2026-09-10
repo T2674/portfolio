@@ -54,18 +54,23 @@
     btnText.textContent = '正在装载胶片… ' + pct + '%';
     if (loaded >= total) finishLoad();
   }
+  let loadDone = false;
   function finishLoad(){
-    const wait = Math.max(0, 650 - (performance.now() - t0));
+    if (loadDone) return;
+    loadDone = true;
+    const wait = Math.max(0, 450 - (performance.now() - t0));
     setTimeout(() => {
       document.body.classList.add('ready');
       btnOpen.disabled = false;
-      btnText.textContent = '🎞 开始放映';
-      // 自动放映：等标题入场后再开演；若观众已经往下滚，则不打扰
+      btnText.textContent = '⏸ 暂停放映';
+      // 无条件自动放映（不再判断滚动位置，任何情况下都自动开始）
       setTimeout(() => {
-        if (!reel.playing && !reel.finished && !reel.paused && window.scrollY < window.innerHeight * 0.5) startReel();
-      }, 1000);
+        if (!reel.playing && !reel.finished && !reel.paused) startReel();
+      }, 900);
     }, wait);
   }
+  // 兜底：素材再慢也确保 3 秒后自动开演
+  setTimeout(finishLoad, 3000);
   assets.forEach(src => {
     const im = new Image();
     im.onload = tickLoad;
@@ -197,13 +202,6 @@
 
     if (reel.paused) return;
 
-    // 滚出开场视野时先不继续，回到顶部会自动接着循环
-    if (window.scrollY >= window.innerHeight * 0.9){
-      caption.textContent = '放映完毕 · 回到顶部继续循环';
-      btnText.textContent = '▶ 继续放映';
-      return;
-    }
-
     reel.cycle++;
     caption.textContent = '第 ' + reel.cycle + ' 轮放映结束 · 正在回卷…';
     reel.loopTimer = setTimeout(() => {
@@ -304,10 +302,6 @@
       requestAnimationFrame(() => {
         updateRail();
         updateProgress();
-        // 回到开场区域时，自动接着循环放映
-        if (reel.finished && !reel.paused && !reel.playing && window.scrollY < window.innerHeight * 0.5){
-          resetReel(); startReel();
-        }
         ticking = false;
       });
     }
