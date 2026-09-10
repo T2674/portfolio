@@ -1,4 +1,4 @@
-/* ============ 推开我的世界 · 一镜到底作品集 ============ */
+/* ============ 一卷胶片 · 一镜到底作品集 ============ */
 :root{
   --bg:#080b0a;
   --bg2:#0d1411;
@@ -72,7 +72,7 @@ main,.footer{position:relative;z-index:2}
 .progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:60;background:transparent}
 #progressBar{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green2),var(--green));box-shadow:0 0 12px rgba(63,227,145,.7)}
 
-/* ---------- Hero / 大门 ---------- */
+/* ---------- Hero / 胶片 ---------- */
 .hero{
   min-height:100svh;
   display:grid;place-items:center;
@@ -96,80 +96,84 @@ main,.footer{position:relative;z-index:2}
 body.ready .eyebrow,body.ready .hero-title{opacity:1;transform:none;transition:opacity .9s var(--ease) .1s,transform .9s var(--ease) .1s}
 body.ready .hero-title{transition-delay:.25s}
 
-/* 大门舞台 */
-.door-stage{
-  position:relative;
-  width:min(680px,92vw);
-  height:clamp(280px,46svh,420px);
-  perspective:1500px;
-  margin:4px 0 2px;
+/* 胶片舞台 */
+.reel-stage{
+  position:relative;width:min(1000px,94vw);height:clamp(280px,46svh,430px);
+  margin:6px 0 2px;opacity:0;transform:translateY(18px);
 }
-.door{position:absolute;top:0;bottom:0;width:50.6%;z-index:5;
-  background:linear-gradient(102deg,#17382a 0%,#0c2118 58%,#0a1a13 100%);
+body.ready .reel-stage{opacity:1;transform:none;transition:opacity .9s var(--ease) .2s,transform .9s var(--ease) .2s}
+.reel-viewport{
+  position:absolute;inset:0;overflow:hidden;border-radius:16px;
+  background:radial-gradient(120% 110% at 50% -12%,rgba(94,255,181,.13),transparent 62%),#050a07;
   border:1px solid rgba(130,240,185,.16);
-  box-shadow:inset -18px 0 34px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.03);
-  transform-style:preserve-3d;will-change:transform;
-  transition:transform 1.5s var(--ease);
+  box-shadow:inset 0 0 90px rgba(0,0,0,.88),0 30px 80px rgba(0,0,0,.5);
 }
-.door--left{left:0;transform-origin:left center;border-radius:16px 0 0 16px}
-.door--right{right:0;transform-origin:right center;border-radius:0 16px 16px 0}
-.door-plank{position:absolute;inset:8px;border:1px solid rgba(255,255,255,.06);
-  background:
-    repeating-linear-gradient(90deg,transparent 0 58px,rgba(255,255,255,.035) 58px 59px),
-    linear-gradient(180deg,rgba(255,255,255,.05),transparent 30%);
-  border-radius:10px}
-.door-handle{position:absolute;top:50%;width:16px;height:16px;margin-top:-8px;border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#ffd98a,#b07b2e 60%,#6e4a17);
-  box-shadow:0 2px 6px rgba(0,0,0,.6);z-index:2}
-.handle-l{right:16%}
-.handle-r{left:16%}
-.door-seam{
-  position:absolute;left:50%;top:6%;bottom:6%;width:2px;margin-left:-1px;z-index:6;
-  background:linear-gradient(180deg,transparent,rgba(63,227,145,.8),transparent);
-  box-shadow:0 0 14px rgba(63,227,145,.9);
-  opacity:.7;transition:opacity .5s;
+.reel-grain{
+  position:absolute;inset:-40%;z-index:6;pointer-events:none;opacity:.13;mix-blend-mode:screen;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.6'/></svg>");
+  animation:grain .6s steps(3) infinite;
 }
-.door-glow{
-  position:absolute;inset:0;z-index:4;border-radius:18px;pointer-events:none;
-  background:radial-gradient(closest-side at 50% 55%,rgba(94,255,181,.34),rgba(40,190,120,.12) 45%,transparent 72%);
-  opacity:0;transition:opacity .8s;
+@keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-3%,2%)}66%{transform:translate(2%,-3%)}100%{transform:translate(0,0)}}
+.film-3d{position:absolute;inset:0;transform-style:preserve-3d;transform:perspective(1200px) rotateX(9deg) rotateY(-13deg) scale(1.08);transition:transform 1s var(--ease)}
+.film-strip{
+  position:absolute;top:50%;left:0;display:flex;align-items:center;gap:16px;
+  padding:20px 0;transform:translateY(-50%);will-change:transform;
 }
-.door-stage.is-open .door-glow{opacity:1;animation:breath 2.4s ease-in-out infinite}
-@keyframes breath{0%,100%{opacity:.75}50%{opacity:1}}
-.door-stage.is-open .door--left{transform:rotateY(-108deg)}
-.door-stage.is-open .door--right{transform:rotateY(108deg)}
-.door-stage.is-open .door-seam{opacity:0}
-
-/* 门内世界 */
-.door-inside{
-  position:absolute;inset:0;z-index:1;border-radius:18px;overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
-  background:
-    radial-gradient(80% 90% at 50% 0%,rgba(63,227,145,.16),transparent 60%),
-    linear-gradient(160deg,#0f2b1e,#07130d 70%);
-  border:1px solid rgba(130,240,185,.14);
+.film-strip::before,.film-strip::after{
+  content:\"\";position:absolute;left:0;right:0;height:14px;opacity:.5;border-radius:2px;
+  background:repeating-linear-gradient(90deg,transparent 0 10px,rgba(255,255,255,.18) 10px 22px,transparent 22px 34px);
 }
-.poster-card{
-  width:min(64%,640px);max-width:60vw;
-  background:#fff;padding:10px;border-radius:12px;
-  box-shadow:0 34px 80px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.4);
-  transform:translateY(16px) scale(.9);opacity:0;
-  transition:transform 1s var(--ease) .35s,opacity .8s .35s;
+.film-strip::before{top:2px}
+.film-strip::after{bottom:2px}
+.frame{
+  position:relative;flex:0 0 auto;width:clamp(170px,20vw,250px);aspect-ratio:4/3;
+  border-radius:3px;overflow:hidden;background:#0a0f0c;border:1px solid rgba(255,255,255,.08);
+  filter:grayscale(.85) brightness(.42) contrast(1.08);
+  transition:filter .6s,box-shadow .6s,transform .6s;
 }
-.poster-card img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:6px}
-.poster-card figcaption{
-  font-size:.72rem;letter-spacing:.2em;color:#37423b;text-align:center;padding:9px 4px 3px;
-  font-weight:600;
+.frame img{width:100%;height:100%;object-fit:cover}
+.frame.lit{filter:none;box-shadow:0 0 0 2px rgba(63,227,145,.6),0 0 46px rgba(63,227,145,.35);transform:scale(1.04)}
+.frame-no{position:absolute;left:9px;bottom:7px;font-size:.66rem;letter-spacing:.22em;color:#e8fff2;text-shadow:0 2px 8px rgba(0,0,0,.95)}
+.frame-leader{display:flex;align-items:center;justify-content:center;background:#0b120e;filter:none}
+.frame-leader::before{content:\"\";position:absolute;width:58%;aspect-ratio:1;border:3px solid rgba(255,255,255,.72);border-radius:50%}
+.leader-num{position:relative;z-index:1;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;color:#fff}
+.frame-spacer{flex:0 0 auto;height:1px}
+.walker{
+  position:absolute;left:50%;top:50%;width:clamp(86px,9.5vw,124px);z-index:5;pointer-events:none;
+  transform:translate(-50%,-52%);filter:drop-shadow(0 16px 20px rgba(0,0,0,.55));
 }
-.door-stage.is-open .poster-card{transform:none;opacity:1}
-.welcome{
-  font-size:.86rem;color:#bfe8d2;letter-spacing:.3em;opacity:0;transform:translateY(8px);
-  transition:opacity .8s .75s,transform .8s .75s;
+.walker img{width:100%;border-radius:8px;background:#f4f4f1;padding:5px;border:1px solid rgba(255,255,255,.55)}
+.reel-stage.is-playing .walker{animation:step .46s ease-in-out infinite}
+@keyframes step{
+  0%,100%{transform:translate(-50%,-52%) rotate(-1.5deg)}
+  50%{transform:translate(-50%,-57%) rotate(1.5deg)}
 }
-.door-stage.is-open .welcome{opacity:1;transform:none}
+.reel-caption{
+  position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:7;
+  font-size:.78rem;letter-spacing:.22em;color:#bfe8d2;white-space:nowrap;
+  background:rgba(5,12,8,.72);border:1px solid rgba(63,227,145,.3);border-radius:99px;padding:5px 16px;
+}
+.reel-beam{
+  position:absolute;left:50%;top:-30%;width:78%;height:130%;transform:translateX(-50%);z-index:0;
+  background:radial-gradient(55% 45% at 50% 0%,rgba(120,255,190,.22),transparent 72%);
+  filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .6s,background .6s,filter .6s;
+}
+.reel-stage.is-playing .reel-beam{opacity:1;animation:flicker .12s steps(2) infinite}
+@keyframes flicker{0%,100%{opacity:.8}50%{opacity:1}}
+.reel-stage.is-end .reel-beam{
+  opacity:1;animation:none;filter:blur(0);
+  background:radial-gradient(45% 40% at 50% 42%,rgba(190,255,220,.55),transparent 74%);
+}
+.reel-stage.is-end .walker{opacity:0;transition:opacity .5s}
+.flash{
+  position:fixed;inset:0;z-index:90;pointer-events:none;opacity:0;
+  background:radial-gradient(closest-side,rgba(228,255,240,.95),rgba(120,255,190,.6) 45%,transparent 76%);
+}
+.flash.on{animation:flash .9s ease-out}
+@keyframes flash{0%{opacity:0}14%{opacity:1}100%{opacity:0}}
 
 /* 按钮与提示 */
-.door-actions{display:flex;flex-direction:column;align-items:center;gap:12px}
+.reel-actions{display:flex;flex-direction:column;align-items:center;gap:12px}
 .btn-open{
   position:relative;overflow:hidden;
   padding:15px 46px;border-radius:99px;font-size:1.02rem;font-weight:700;letter-spacing:.12em;
@@ -359,10 +363,11 @@ body.ready .hint{opacity:1;transform:none}
   .nav-replay{margin-left:auto}
   .skill-grid{grid-template-columns:1fr}
   .hero{padding-top:110px}
-  .door-stage{width:94vw;height:40svh}
-  .poster-card{width:78%}
+  .reel-stage{width:94vw;height:42svh}
+  .frame{width:150px}
+  .walker{width:78px}
   .float-chip{font-size:.7rem}
-  .handle-l{right:10%}.handle-r{left:10%}
+  .reel-caption{font-size:.66rem;letter-spacing:.12em;padding:4px 12px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001s !important;transition-duration:.001s !important;scroll-behavior:auto !important}
