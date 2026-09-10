@@ -402,3 +402,18 @@ body.ready .hint{opacity:1;transform:none}
 @media (max-width:680px){
   .walker{left:16%;width:66px}
 }
+
+/* ---------- 联系邮箱（替换原按钮） ---------- */
+.contact-mail{
+  display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
+  margin:6px 0 10px;
+}
+.contact-mail .mail-label{
+  font-size:.72rem;letter-spacing:.34em;color:var(--muted);
+}
+.contact-mail a{
+  font-size:clamp(1.05rem,2.4vw,1.5rem);font-weight:700;letter-spacing:.04em;color:#d9f6e6;
+  padding:4px 2px;border-bottom:2px solid rgba(63,227,145,.5);
+  transition:color .3s,border-color .3s;
+}
+.contact-mail a:hover{color:var(--green);border-color:var(--green)}
