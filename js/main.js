@@ -63,7 +63,7 @@
       btnText.textContent = '🎞 开始放映';
       // 自动放映：等标题入场后再开演；若观众已经往下滚，则不打扰
       setTimeout(() => {
-        if (!playing && !finished && window.scrollY < window.innerHeight * 0.5) playReel(true);
+        if (!reel.playing && !reel.finished && !reel.paused && window.scrollY < window.innerHeight * 0.5) startReel();
       }, 1000);
     }, wait);
   }
@@ -74,7 +74,7 @@
     im.src = src;
   });
 
-  /* ---------- 一卷胶片 · 开场（逐格推进） ---------- */
+  /* ---------- 一卷胶片 · 开场（逐格推进 · 循环播放） ---------- */
   const stage = $('#reelStage');
   const strip = $('#filmStrip');
   const viewport = $('.reel-viewport', stage);
@@ -107,110 +107,151 @@
   window.addEventListener('resize', sizeSpacer);
 
   const frames = () => $$('.frame', strip);
-  let playing = false, finished = false, timer = null;
+
+  const reel = {
+    all: [], index: 0, focusX: 0, cycle: 0,
+    playing: false, paused: false, finished: false,
+    moveRaf: null, holdTimer: null, loopTimer: null
+  };
+  const MOVE = reduceMotion ? 1 : 340;      // 每格移动时长(ms)
+  const HOLD = reduceMotion ? 20 : 430;     // 每格停顿(ms)
+  const LOOP_HOLD = 900;                    // 一轮结束后的停留(ms)
+  const REWIND = reduceMotion ? 10 : 700;   // 回卷时长(ms)
+
+  function clearTimers(){
+    if (reel.moveRaf){ cancelAnimationFrame(reel.moveRaf); reel.moveRaf = null; }
+    if (reel.holdTimer){ clearTimeout(reel.holdTimer); reel.holdTimer = null; }
+    if (reel.loopTimer){ clearTimeout(reel.loopTimer); reel.loopTimer = null; }
+  }
+
+  function setStripX(x){
+    strip.dataset.x = String(x);
+    strip.style.transform = 'translateY(-50%) translateX(' + x + 'px)';
+  }
 
   function resetReel(){
-    if (timer) clearTimeout(timer);
-    timer = null; playing = false; finished = false;
-    strip.dataset.x = '0';
+    clearTimers();
+    reel.playing = false; reel.finished = false; reel.index = 0;
     strip.style.transition = '';
-    strip.style.transform = 'translateY(-50%)';
     strip.style.opacity = '';
+    setStripX(0);
     frames().forEach(f => f.classList.remove('lit'));
     stage.classList.remove('is-playing', 'is-end', 'is-end-soft');
     caption.textContent = '胶片已装填 · 即将自动放映';
   }
 
-  function playReel(auto){
-    if (playing || finished) return;
-    if (!document.body.classList.contains('ready')) return;
-    playing = true;
-    btnOpen.disabled = true;
-    btnText.textContent = '胶片放映中…';
+  function moveTo(idx, done){
+    const f = reel.all[idx];
+    if (!f){ done(); return; }
+    const target = -(f.offsetLeft + f.offsetWidth / 2 - reel.focusX);
+    const from = parseFloat(strip.dataset.x || '0');
+    const t0 = performance.now();
+    function tween(now){
+      if (reel.paused){ done(); return; }
+      const p = Math.min(1, (now - t0) / MOVE);
+      const e = 1 - Math.pow(1 - p, 3);
+      setStripX(from + (target - from) * e);
+      if (p < 1){ reel.moveRaf = requestAnimationFrame(tween); }
+      else { reel.moveRaf = null; done(); }
+    }
+    reel.moveRaf = requestAnimationFrame(tween);
+  }
+
+  function stepFrame(){
+    if (reel.paused) return;
+    if (reel.index >= reel.all.length){ finishCycle(); return; }
+    const f = reel.all[reel.index];
+    if (f.classList.contains('frame-leader')){
+      const n = $('.leader-num', f);
+      caption.textContent = '倒数 ' + (n ? n.textContent : '') + ' · 准备放映';
+    } else {
+      const idx = Number(f.dataset.index);
+      caption.textContent = 'FRAME ' + String(reel.index - 2).padStart(2, '0') + ' / ' + WORKS.length +
+                            ' · ' + (WORKS[idx] ? WORKS[idx].title : '');
+    }
+    moveTo(reel.index, () => {
+      if (reel.paused) return;
+      f.classList.add('lit');
+      reel.index++;
+      reel.holdTimer = setTimeout(stepFrame, HOLD);
+    });
+  }
+
+  function startReel(){
+    if (reel.playing || reel.paused) return;
+    reel.all = frames();
+    reel.focusX = viewport.clientWidth * 0.62;
+    reel.playing = true; reel.finished = false;
     stage.classList.add('is-playing');
-
-    const all = frames();
-    const focusX = viewport.clientWidth * 0.62;
-    const MOVE = reduceMotion ? 1 : 340;
-    const HOLD = reduceMotion ? 20 : 430;
-    let i = 0;
-
-    function moveTo(idx, done){
-      const f = all[idx];
-      const target = -(f.offsetLeft + f.offsetWidth / 2 - focusX);
-      const from = parseFloat(strip.dataset.x || '0');
-      const t0 = performance.now();
-      function tween(now){
-        const p = Math.min(1, (now - t0) / MOVE);
-        const e = 1 - Math.pow(1 - p, 3);
-        const x = from + (target - from) * e;
-        strip.dataset.x = String(x);
-        strip.style.transform = 'translateY(-50%) translateX(' + x + 'px)';
-        if (p < 1) requestAnimationFrame(tween); else done();
-      }
-      requestAnimationFrame(tween);
-    }
-
-    function stepFrame(){
-      if (i >= all.length){ finishReel(auto); return; }
-      const f = all[i];
-      if (f.classList.contains('frame-leader')){
-        const n = $('.leader-num', f);
-        const num = n ? Number(n.textContent) : 0;
-        caption.textContent = '倒数 ' + num + ' · 准备放映';
-      } else {
-        const idx = Number(f.dataset.index);
-        caption.textContent = 'FRAME ' + String(i - 2).padStart(2, '0') + ' / ' + WORKS.length +
-                              ' · ' + (WORKS[idx] ? WORKS[idx].title : '');
-      }
-      moveTo(i, () => {
-        f.classList.add('lit');
-        i++;
-        timer = setTimeout(stepFrame, HOLD);
-      });
-    }
+    stage.classList.remove('is-end-soft', 'is-end');
+    btnOpen.disabled = false;
+    btnText.textContent = '⏸ 暂停放映';
     stepFrame();
   }
 
-  function finishReel(auto){
-    if (timer) clearTimeout(timer);
-    playing = false; finished = true;
-    btnOpen.disabled = false;
+  function finishCycle(){
+    reel.playing = false; reel.finished = true;
+    frames().forEach(f => f.classList.add('lit'));
+    stage.classList.add('is-end-soft');
     flash.classList.add('on');
-    setTimeout(() => flash.classList.remove('on'), 1000);
+    setTimeout(() => flash.classList.remove('on'), 900);
 
-    if (auto){
-      // 自动播放：留在开场，把主导权交还给观众
-      stage.classList.add('is-end-soft');
-      frames().forEach(f => f.classList.add('lit'));
-      caption.textContent = '放映完毕 · 向下滚动，走进我的世界 ↓';
-      btnText.textContent = '↺ 重新放映';
+    if (reel.paused) return;
+
+    // 滚出开场视野时先不继续，回到顶部会自动接着循环
+    if (window.scrollY >= window.innerHeight * 0.9){
+      caption.textContent = '放映完毕 · 回到顶部继续循环';
+      btnText.textContent = '▶ 继续放映';
+      return;
+    }
+
+    reel.cycle++;
+    caption.textContent = '第 ' + reel.cycle + ' 轮放映结束 · 正在回卷…';
+    reel.loopTimer = setTimeout(() => {
+      if (reel.paused) return;
+      // 胶片回卷：快速退回起点
+      strip.style.transition = 'transform ' + REWIND + 'ms cubic-bezier(.5,0,.2,1), opacity .35s';
+      strip.style.opacity = '.22';
+      setStripX(0);
+      reel.loopTimer = setTimeout(() => {
+        if (reel.paused) return;
+        strip.style.transition = 'opacity .4s';
+        strip.style.opacity = '';
+        reel.loopTimer = setTimeout(() => {
+          if (reel.paused) return;
+          resetReel();
+          startReel();
+        }, 420);
+      }, REWIND);
+    }, LOOP_HOLD);
+  }
+
+  function togglePause(){
+    if (reel.paused){
+      reel.paused = false;
+      stage.classList.remove('is-end-soft', 'is-end');
+      btnText.textContent = '⏸ 暂停放映';
+      if (reel.finished){ resetReel(); startReel(); }
+      else { startReel(); }
     } else {
-      // 手动点击：卷片收尾，并顺畅滚入「关于我」
-      stage.classList.add('is-end');
-      strip.style.transition = 'transform 1s var(--ease), opacity .8s ease .15s';
-      strip.style.transform = 'translateY(-50%) scale(.42) rotate(-14deg)';
-      strip.style.opacity = '0';
-      btnText.textContent = '放映结束 · 进入我的世界 ↓';
-      setTimeout(() => {
-        const about = $('#about');
-        if (about) about.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-      }, 800);
+      reel.paused = true;
+      clearTimers();
+      reel.playing = false;
+      stage.classList.remove('is-playing');
+      btnText.textContent = '▶ 继续放映';
+      caption.textContent = '已暂停 · 点「继续放映」接着放';
     }
   }
 
-  function playManually(){
-    if (finished) resetReel();
-    playReel(false);
-  }
-  btnOpen.addEventListener('click', playManually);
-  viewport.addEventListener('click', playManually);
+  btnOpen.addEventListener('click', togglePause);
+  viewport.addEventListener('click', togglePause);
   $('#btnReplay').addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
     setTimeout(() => {
+      reel.paused = false;
       resetReel();
-      btnText.textContent = '🎞 开始放映';
-      setTimeout(() => { if (!playing && !finished) playReel(true); }, 500);
+      btnText.textContent = '⏸ 暂停放映';
+      setTimeout(() => { if (!reel.paused) startReel(); }, 420);
     }, 650);
   });
 
@@ -264,6 +305,10 @@
       requestAnimationFrame(() => {
         updateRail();
         updateProgress();
+        // 回到开场区域时，自动接着循环放映
+        if (reel.finished && !reel.paused && !reel.playing && window.scrollY < window.innerHeight * 0.5){
+          resetReel(); startReel();
+        }
         ticking = false;
       });
     }
