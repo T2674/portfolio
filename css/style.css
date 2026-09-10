@@ -417,3 +417,14 @@ body.ready .hint{opacity:1;transform:none}
   transition:color .3s,border-color .3s;
 }
 .contact-mail a:hover{color:var(--green);border-color:var(--green)}
+
+/* ---------- 自动播放收尾（留在开场，不强行滚动） ---------- */
+.reel-stage.is-end-soft .film-3d{
+  transform:perspective(1200px) rotateX(6deg) rotateY(-9deg) scale(1.02);
+  transition:transform 1.2s var(--ease);
+}
+.reel-stage.is-end-soft .reel-beam{
+  opacity:1;animation:none;filter:blur(0);
+  background:radial-gradient(50% 45% at 50% 46%,rgba(180,255,215,.35),transparent 75%);
+}
+.reel-stage.is-end-soft .walker{opacity:1}

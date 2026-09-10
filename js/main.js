@@ -61,6 +61,10 @@
       document.body.classList.add('ready');
       btnOpen.disabled = false;
       btnText.textContent = '🎞 开始放映';
+      // 自动放映：等标题入场后再开演；若观众已经往下滚，则不打扰
+      setTimeout(() => {
+        if (!playing && !finished && window.scrollY < window.innerHeight * 0.5) playReel(true);
+      }, 1000);
     }, wait);
   }
   assets.forEach(src => {
@@ -113,14 +117,16 @@
     strip.style.transform = 'translateY(-50%)';
     strip.style.opacity = '';
     frames().forEach(f => f.classList.remove('lit'));
-    stage.classList.remove('is-playing', 'is-end');
-    caption.textContent = '胶片已装填 · 等你按下放映键';
+    stage.classList.remove('is-playing', 'is-end', 'is-end-soft');
+    caption.textContent = '胶片已装填 · 即将自动放映';
   }
 
-  function playReel(){
+  function playReel(auto){
     if (playing || finished) return;
     if (!document.body.classList.contains('ready')) return;
     playing = true;
+    btnOpen.disabled = true;
+    btnText.textContent = '胶片放映中…';
     stage.classList.add('is-playing');
 
     const all = frames();
@@ -146,7 +152,7 @@
     }
 
     function stepFrame(){
-      if (i >= all.length){ finishReel(); return; }
+      if (i >= all.length){ finishReel(auto); return; }
       const f = all[i];
       if (f.classList.contains('frame-leader')){
         const n = $('.leader-num', f);
@@ -166,29 +172,45 @@
     stepFrame();
   }
 
-  function finishReel(){
+  function finishReel(auto){
     if (timer) clearTimeout(timer);
     playing = false; finished = true;
-    stage.classList.add('is-end');
-    strip.style.transition = 'transform 1s var(--ease), opacity .8s ease .15s';
-    strip.style.transform = 'translateY(-50%) scale(.42) rotate(-14deg)';
-    strip.style.opacity = '0';
+    btnOpen.disabled = false;
     flash.classList.add('on');
     setTimeout(() => flash.classList.remove('on'), 1000);
-    btnText.textContent = '放映结束 · 进入我的世界 ↓';
-    setTimeout(() => {
-      const about = $('#about');
-      if (about) about.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-    }, 800);
+
+    if (auto){
+      // 自动播放：留在开场，把主导权交还给观众
+      stage.classList.add('is-end-soft');
+      frames().forEach(f => f.classList.add('lit'));
+      caption.textContent = '放映完毕 · 向下滚动，走进我的世界 ↓';
+      btnText.textContent = '↺ 重新放映';
+    } else {
+      // 手动点击：卷片收尾，并顺畅滚入「关于我」
+      stage.classList.add('is-end');
+      strip.style.transition = 'transform 1s var(--ease), opacity .8s ease .15s';
+      strip.style.transform = 'translateY(-50%) scale(.42) rotate(-14deg)';
+      strip.style.opacity = '0';
+      btnText.textContent = '放映结束 · 进入我的世界 ↓';
+      setTimeout(() => {
+        const about = $('#about');
+        if (about) about.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+      }, 800);
+    }
   }
 
-  btnOpen.addEventListener('click', playReel);
-  viewport.addEventListener('click', playReel);
+  function playManually(){
+    if (finished) resetReel();
+    playReel(false);
+  }
+  btnOpen.addEventListener('click', playManually);
+  viewport.addEventListener('click', playManually);
   $('#btnReplay').addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
     setTimeout(() => {
       resetReel();
       btnText.textContent = '🎞 开始放映';
+      setTimeout(() => { if (!playing && !finished) playReel(true); }, 500);
     }, 650);
   });
 
