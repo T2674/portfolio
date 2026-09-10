@@ -6,15 +6,18 @@
   const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
 
   /* ---------- 作品数据：在这里替换/增删你的作品 ---------- */
-  const WORKS = [
-    { src:'assets/refs/character-line.png',  title:'角色设定 · 黑白线稿',  tag:'角色设计', desc:'从干净的线条开始定义角色：圆框眼镜、利落发型，气质先落在纸上。' },
-    { src:'assets/refs/character-face.jpg',  title:'角色 · 正面形象参考',  tag:'角色设计', desc:'面向镜头的标准形象：黑框圆眼镜 + 黑色圆领衫，松弛但认真的少年感。' },
-    { src:'assets/refs/character-half.jpg',  title:'角色 · 半身形象',      tag:'角色 / 头像', desc:'常用半身形象，作为头像与开场角色出现在作品集各处。' },
-    { src:'assets/refs/character-green.jpg', title:'角色 · 深绿变装 · 片头主视觉', tag:'角色 / 场景', desc:'深绿色调变装版本，在“一卷胶片”开场里担任出镜的演员。' },
-    { src:'assets/refs/ref-02.jpg',          title:'氛围 / 光影参考',      tag:'光影',       desc:'低光氛围参考：暗部里的轮廓与高光，是讲故事时最在意的部分。' },
-    { src:'assets/refs/ref-01.jpg',          title:'草图 / 动态参考 01',   tag:'草图',       desc:'动态草图参考之一，捕捉运动瞬间的张力。' },
-    { src:'assets/refs/ref-03.jpg',          title:'草图 / 动态参考 02',   tag:'草图',       desc:'动态草图参考之二，练习形体与节奏。' }
-  ];
+      const WORKS = [
+      { src:'assets/works/paint-01.jpg',  title:'厚涂作品 01',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
+      { src:'assets/works/paint-02.jpg',  title:'厚涂作品 02',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
+      { src:'assets/works/paint-03.jpg',  title:'厚涂作品 03',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
+      { src:'assets/works/model-01.jpg',  title:'建模作品 01',        tag:'3D 建模',     orient:'square',    desc:'3D 建模作品，点击可放大查看。' },
+      { src:'assets/works/model-02.jpg',  title:'建模作品 02',        tag:'3D 建模',     orient:'square',    desc:'3D 建模作品，点击可放大查看。' },
+      { src:'assets/works/manhua-01.jpg', title:'AI 漫剧 · 画面 01',  tag:'AI 漫剧',     orient:'portrait',  desc:'AI 漫剧项目画面，点击可放大查看。' },
+      { src:'assets/works/manhua-02.jpg', title:'AI 漫剧 · 画面 02',  tag:'AI 漫剧',     orient:'portrait',  desc:'AI 漫剧项目画面，点击可放大查看。' },
+      { src:'assets/works/manhua-03.jpg', title:'AI 漫剧 · 场景 03',  tag:'AI 漫剧',     orient:'landscape', desc:'AI 漫剧项目场景，点击可放大查看。' },
+      { src:'assets/works/manhua-04.jpg', title:'AI 漫剧 · 场景 04',  tag:'AI 漫剧',     orient:'landscape', desc:'AI 漫剧项目场景，点击可放大查看。' }
+    ];
+
 
   const SECTIONS = [
     { id:'about',   label:'关于我' },
@@ -27,7 +30,7 @@
   const grid = $('#workGrid');
   WORKS.forEach((w, i) => {
     const card = document.createElement('article');
-    card.className = 'work-card reveal';
+    card.className = 'work-card reveal' + (w.orient ? ' is-' + w.orient : '');
     card.dataset.index = i;
     card.setAttribute('tabindex', '0');
     card.setAttribute('aria-label', w.title);
@@ -36,10 +39,6 @@
       '<div class="work-info"><span class="work-tag">' + w.tag + '</span><h3 class="work-title">' + w.title + '</h3></div>';
     grid.appendChild(card);
   });
-  const more = document.createElement('article');
-  more.className = 'work-card work-card--more reveal';
-  more.innerHTML = '<div class="more-body"><span class="more-plus">＋</span><h3>更多作品位</h3><p>把作品封面放进 assets/works 后，在 main.js 的 WORKS 里加一行即可。</p></div>';
-  grid.appendChild(more);
 
   /* ---------- 预加载（放映前） ---------- */
   const btnOpen = $('#btnOpen');
@@ -351,13 +350,13 @@
   }
   grid.addEventListener('click', (e) => {
     const card = e.target.closest('.work-card');
-    if (!card || card.classList.contains('work-card--more')) return;
+    if (!card) return;
     showLb(Number(card.dataset.index));
   });
   grid.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' '){
       const card = e.target.closest('.work-card');
-      if (card && !card.classList.contains('work-card--more')){
+      if (card){
         e.preventDefault();
         showLb(Number(card.dataset.index));
       }

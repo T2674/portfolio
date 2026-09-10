@@ -434,3 +434,9 @@ body.ready .hint{opacity:1;transform:none}
   position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0 0 0 0);white-space:nowrap;border:0;
 }
+
+/* ---------- 作品图片方向适配（竖图/方图/横图） ---------- */
+.work-card.is-portrait .work-media{aspect-ratio:3/4}
+.work-card.is-square  .work-media{aspect-ratio:1/1}
+/* 胶片格内完整显示画面（不裁切），两侧留黑边更像真实胶片 */
+.frame img{object-fit:contain}
