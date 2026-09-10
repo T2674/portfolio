@@ -70,14 +70,15 @@
     im.src = src;
   });
 
-  /* ---------- 一卷胶片 · 开场 ---------- */
+  /* ---------- 一卷胶片 · 开场（逐格推进） ---------- */
   const stage = $('#reelStage');
   const strip = $('#filmStrip');
   const viewport = $('.reel-viewport', stage);
   const caption = $('#reelCaption');
   const flash = $('#flash');
+  const btnSound = $('#btnSound');
 
-  // 胶片内容：片头片（倒计时 3·2·1）+ 作品格
+  // 胶片内容：片头片（倒数 3·2·1）+ 作品格
   const spacer = document.createElement('div');
   spacer.className = 'frame-spacer';
   strip.appendChild(spacer);
@@ -103,11 +104,56 @@
   window.addEventListener('resize', sizeSpacer);
 
   const frames = () => $$('.frame', strip);
-  let playing = false, finished = false, rafId = null;
+  let playing = false, finished = false, timer = null;
+
+  /* 走片音效（WebAudio 合成，可开关） */
+  let audioCtx = null, soundOn = true;
+  function getAudio(){
+    if (!audioCtx){
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (Ctx) audioCtx = new Ctx();
+    }
+    return audioCtx;
+  }
+  function blip(freq, dur, vol, type){
+    if (!soundOn) return;
+    const c = getAudio();
+    if (!c) return;
+    const t = c.currentTime;
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.type = type || 'square';
+    o.frequency.setValueAtTime(freq, t);
+    o.frequency.exponentialRampToValueAtTime(Math.max(120, freq * 0.6), t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g);
+    g.connect(c.destination);
+    o.start(t);
+    o.stop(t + dur + 0.02);
+  }
+  const tickSound = () => blip(1500, 0.05, 0.045, 'square');
+  const beepSound = (n) => blip(620 + (3 - n) * 130, 0.22, 0.075, 'sine');
+
+  if (btnSound){
+    btnSound.addEventListener('click', () => {
+      soundOn = !soundOn;
+      btnSound.textContent = soundOn ? '🔊 音效' : '🔇 静音';
+      btnSound.classList.toggle('is-off', !soundOn);
+      btnSound.setAttribute('aria-pressed', String(soundOn));
+      if (soundOn){
+        const c = getAudio();
+        if (c && c.state === 'suspended') c.resume();
+        blip(880, 0.08, 0.04, 'sine');
+      }
+    });
+  }
 
   function resetReel(){
-    if (rafId) cancelAnimationFrame(rafId);
-    rafId = null; playing = false; finished = false;
+    if (timer) clearTimeout(timer);
+    timer = null; playing = false; finished = false;
+    strip.dataset.x = '0';
     strip.style.transition = '';
     strip.style.transform = 'translateY(-50%)';
     strip.style.opacity = '';
@@ -118,61 +164,72 @@
 
   function playReel(){
     if (playing || finished) return;
+    if (!document.body.classList.contains('ready')) return;
     playing = true;
     stage.classList.add('is-playing');
+    const c = getAudio();
+    if (c && c.state === 'suspended') c.resume();
 
     const all = frames();
-    const total = Math.max(0, strip.scrollWidth - viewport.clientWidth);
-    const duration = reduceMotion ? 0 : 9500;
-    const start = performance.now();
-    let lastNearest = -1;
+    const focusX = viewport.clientWidth * 0.62;
+    const MOVE = reduceMotion ? 1 : 340;
+    const HOLD = reduceMotion ? 20 : 430;
+    let i = 0;
 
-    function tick(now){
-      const t = duration ? Math.min(1, (now - start) / duration) : 1;
-      const eased = t * t * (3 - 2 * t);          // 平滑推进
-      strip.style.transform = 'translateY(-50%) translateX(' + (-eased * total) + 'px)';
-
-      // 找最靠近画面中心的胶片格
-      const vp = viewport.getBoundingClientRect();
-      const centerX = vp.left + vp.width / 2;
-      let nearest = -1, best = Infinity;
-      for (let i = 0; i < all.length; i++){
-        const r = all[i].getBoundingClientRect();
-        const d = Math.abs(r.left + r.width / 2 - centerX);
-        if (d < best){ best = d; nearest = i; }
+    function moveTo(idx, done){
+      const f = all[idx];
+      const target = -(f.offsetLeft + f.offsetWidth / 2 - focusX);
+      const from = parseFloat(strip.dataset.x || '0');
+      const t0 = performance.now();
+      function tween(now){
+        const p = Math.min(1, (now - t0) / MOVE);
+        const e = 1 - Math.pow(1 - p, 3);
+        const x = from + (target - from) * e;
+        strip.dataset.x = String(x);
+        strip.style.transform = 'translateY(-50%) translateX(' + x + 'px)';
+        if (p < 1) requestAnimationFrame(tween); else done();
       }
-      if (nearest !== lastNearest && nearest >= 0){
-        lastNearest = nearest;
-        for (let i = 0; i <= nearest; i++) all[i].classList.add('lit');
-        const f = all[nearest];
-        if (f.classList.contains('frame-leader')){
-          const n = $('.leader-num', f);
-          caption.textContent = '胶片倒数 ' + (n ? n.textContent : '') + ' · 准备放映';
-        } else {
-          const idx = Number(f.dataset.index);
-          caption.textContent = WORKS[idx] ? WORKS[idx].title : '';
-        }
-      }
-
-      if (t < 1){ rafId = requestAnimationFrame(tick); }
-      else { finishReel(); }
+      requestAnimationFrame(tween);
     }
-    rafId = requestAnimationFrame(tick);
+
+    function stepFrame(){
+      if (i >= all.length){ finishReel(); return; }
+      const f = all[i];
+      if (f.classList.contains('frame-leader')){
+        const n = $('.leader-num', f);
+        const num = n ? Number(n.textContent) : 0;
+        caption.textContent = '倒数 ' + num + ' · 准备放映';
+        beepSound(num);
+      } else {
+        tickSound();
+        const idx = Number(f.dataset.index);
+        caption.textContent = 'FRAME ' + String(i - 2).padStart(2, '0') + ' / ' + WORKS.length +
+                              ' · ' + (WORKS[idx] ? WORKS[idx].title : '');
+      }
+      moveTo(i, () => {
+        f.classList.add('lit');
+        i++;
+        timer = setTimeout(stepFrame, HOLD);
+      });
+    }
+    stepFrame();
   }
 
   function finishReel(){
+    if (timer) clearTimeout(timer);
     playing = false; finished = true;
     stage.classList.add('is-end');
     strip.style.transition = 'transform 1s var(--ease), opacity .8s ease .15s';
     strip.style.transform = 'translateY(-50%) scale(.42) rotate(-14deg)';
     strip.style.opacity = '0';
+    blip(1100, 0.5, 0.07, 'sine');
     flash.classList.add('on');
     setTimeout(() => flash.classList.remove('on'), 1000);
     btnText.textContent = '放映结束 · 进入我的世界 ↓';
     setTimeout(() => {
       const about = $('#about');
       if (about) about.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-    }, 750);
+    }, 800);
   }
 
   btnOpen.addEventListener('click', playReel);
