@@ -7,18 +7,18 @@
 
   /* ---------- 作品数据：在这里替换/增删你的作品 ---------- */
       const WORKS = [
-      { type:'video', video:'assets/videos/video-03.mp4', src:'assets/works/video-poster-03.webp', title:'毕业动画《光影传承》', tag:'动画短片 · 视频', orient:'landscape', desc:'毕业设计动画短片，时长 2 分 45 秒，点击播放。' },
-      { type:'video', video:'assets/videos/video-02.mp4', src:'assets/works/video-poster-02.webp', title:'精品漫剧 01',           tag:'AI 漫剧 · 视频', orient:'portrait',  desc:'竖屏 AI 漫剧，时长 1 分 22 秒，点击播放。' },
-      { type:'video', video:'assets/videos/video-01.mp4', src:'assets/works/video-poster-01.webp', title:'精品漫剧 02',           tag:'AI 漫剧 · 视频', orient:'landscape', desc:'AI 漫剧片段，时长 54 秒，点击播放。' },
-      { src:'assets/works/paint-01.webp',  title:'厚涂作品 01',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
-      { src:'assets/works/paint-02.webp',  title:'厚涂作品 02',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
-      { src:'assets/works/paint-03.webp',  title:'厚涂作品 03',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
-      { src:'assets/works/model-01.webp',  title:'建模作品 01',        tag:'3D 建模',     orient:'square',    desc:'3D 建模作品，点击可放大查看。' },
-      { src:'assets/works/model-02.webp',  title:'建模作品 02',        tag:'3D 建模',     orient:'square',    desc:'3D 建模作品，点击可放大查看。' },
-      { src:'assets/works/manhua-01.webp', title:'AI 漫剧 · 画面 01',  tag:'AI 漫剧',     orient:'portrait',  desc:'AI 漫剧项目画面，点击可放大查看。' },
-      { src:'assets/works/manhua-02.webp', title:'AI 漫剧 · 画面 02',  tag:'AI 漫剧',     orient:'portrait',  desc:'AI 漫剧项目画面，点击可放大查看。' },
-      { src:'assets/works/manhua-03.webp', title:'AI 漫剧 · 场景 03',  tag:'AI 漫剧',     orient:'landscape', desc:'AI 漫剧项目场景，点击可放大查看。' },
-      { src:'assets/works/manhua-04.webp', title:'AI 漫剧 · 场景 04',  tag:'AI 漫剧',     orient:'landscape', desc:'AI 漫剧项目场景，点击可放大查看。' }
+      { group:'毕业动画', type:'video', video:'assets/videos/video-03.mp4', src:'assets/works/video-poster-03.webp', title:'毕业动画《光影传承》', tag:'动画短片 · 视频', orient:'landscape', desc:'毕业设计动画短片，时长 2 分 45 秒，点击播放。' },
+      { group:'精品漫剧', type:'video', video:'assets/videos/video-02.mp4', src:'assets/works/video-poster-02.webp', title:'精品漫剧 01',           tag:'AI 漫剧 · 视频', orient:'portrait',  desc:'竖屏 AI 漫剧，时长 1 分 22 秒，点击播放。' },
+      { group:'精品漫剧', type:'video', video:'assets/videos/video-01.mp4', src:'assets/works/video-poster-01.webp', title:'精品漫剧 02',           tag:'AI 漫剧 · 视频', orient:'landscape', desc:'AI 漫剧片段，时长 54 秒，点击播放。' },
+      { group:'厚涂 · 插画', src:'assets/works/paint-01.webp',  title:'厚涂作品 01',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
+      { group:'厚涂 · 插画', src:'assets/works/paint-02.webp',  title:'厚涂作品 02',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
+      { group:'厚涂 · 插画', src:'assets/works/paint-03.webp',  title:'厚涂作品 03',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
+      { group:'3D 建模', src:'assets/works/model-01.webp',  title:'建模作品 01',        tag:'3D 建模',     orient:'square',    desc:'3D 建模作品，点击可放大查看。' },
+      { group:'3D 建模', src:'assets/works/model-02.webp',  title:'建模作品 02',        tag:'3D 建模',     orient:'square',    desc:'3D 建模作品，点击可放大查看。' },
+      { group:'AI 漫剧 · 画面', src:'assets/works/manhua-01.webp', title:'AI 漫剧 · 画面 01',  tag:'AI 漫剧',     orient:'portrait',  desc:'AI 漫剧项目画面，点击可放大查看。' },
+      { group:'AI 漫剧 · 画面', src:'assets/works/manhua-02.webp', title:'AI 漫剧 · 画面 02',  tag:'AI 漫剧',     orient:'portrait',  desc:'AI 漫剧项目画面，点击可放大查看。' },
+      { group:'AI 漫剧 · 画面', src:'assets/works/manhua-03.webp', title:'AI 漫剧 · 场景 03',  tag:'AI 漫剧',     orient:'landscape', desc:'AI 漫剧项目场景，点击可放大查看。' },
+      { group:'AI 漫剧 · 画面', src:'assets/works/manhua-04.webp', title:'AI 漫剧 · 场景 04',  tag:'AI 漫剧',     orient:'landscape', desc:'AI 漫剧项目场景，点击可放大查看。' }
     ];
 
 
@@ -29,26 +29,45 @@
     { id:'contact', label:'联系' }
   ];
 
-  /* ---------- 渲染作品网格 ---------- */
+  /* ---------- 渲染作品网格（按分类分组） ---------- */
   const grid = $('#workGrid');
-  WORKS.forEach((w, i) => {
-    const card = document.createElement('article');
-    card.className = 'work-card reveal' + (w.orient ? ' is-' + w.orient : '');
-    card.dataset.index = i;
-    card.setAttribute('tabindex', '0');
-    card.setAttribute('aria-label', w.title);
-    const media = (w.type === 'video')
-      ? '<video muted loop playsinline preload="none" poster="' + w.src + '" src="' + w.video + '"></video><span class="play-badge">▶</span>'
-      : '<img loading="lazy" src="' + w.src + '" alt="' + w.title + '" />';
-    card.innerHTML =
-      '<div class="work-media">' + media + '</div>' +
-      '<div class="work-info"><span class="work-tag">' + w.tag + '</span><h3 class="work-title">' + w.title + '</h3></div>';
-    if (w.type === 'video'){
-      const vid = card.querySelector('video');
-      card.addEventListener('mouseenter', () => { const pr = vid.play(); if (pr && pr.catch) pr.catch(() => {}); });
-      card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
-    }
-    grid.appendChild(card);
+  const groupNames = [];
+  WORKS.forEach((w) => {
+    const n = w.group || '作品';
+    if (groupNames.indexOf(n) === -1) groupNames.push(n);
+  });
+  groupNames.forEach((name) => {
+    const sec = document.createElement('section');
+    sec.className = 'work-group';
+    const title = document.createElement('h3');
+    title.className = 'work-group-title reveal';
+    title.textContent = name;
+    sec.appendChild(title);
+    const g = document.createElement('div');
+    g.className = 'work-grid';
+    sec.appendChild(g);
+    WORKS.forEach((w) => {
+      if ((w.group || '作品') !== name) return;
+      const index = WORKS.indexOf(w);
+      const card = document.createElement('article');
+      card.className = 'work-card reveal' + (w.orient ? ' is-' + w.orient : '');
+      card.dataset.index = index;
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', w.title);
+      const media = (w.type === 'video')
+        ? '<video muted loop playsinline preload="none" poster="' + w.src + '" src="' + w.video + '"></video><span class="play-badge">▶</span>'
+        : '<img loading="lazy" src="' + w.src + '" alt="' + w.title + '" />';
+      card.innerHTML =
+        '<div class="work-media">' + media + '</div>' +
+        '<div class="work-info"><span class="work-tag">' + w.tag + '</span><h3 class="work-title">' + w.title + '</h3></div>';
+      if (w.type === 'video'){
+        const vid = card.querySelector('video');
+        card.addEventListener('mouseenter', () => { const pr = vid.play(); if (pr && pr.catch) pr.catch(() => {}); });
+        card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+      }
+      g.appendChild(card);
+    });
+    grid.appendChild(sec);
   });
 
   /* ---------- 预加载（放映前） ---------- */
