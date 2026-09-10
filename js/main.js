@@ -7,6 +7,9 @@
 
   /* ---------- 作品数据：在这里替换/增删你的作品 ---------- */
       const WORKS = [
+      { type:'video', video:'assets/videos/video-03.mp4', src:'assets/works/video-poster-03.jpg', title:'毕业动画《光影传承》', tag:'动画短片 · 视频', orient:'landscape', desc:'毕业设计动画短片，时长 2 分 45 秒，点击播放。' },
+      { type:'video', video:'assets/videos/video-02.mp4', src:'assets/works/video-poster-02.jpg', title:'精品漫剧 01',           tag:'AI 漫剧 · 视频', orient:'portrait',  desc:'竖屏 AI 漫剧，时长 1 分 22 秒，点击播放。' },
+      { type:'video', video:'assets/videos/video-01.mp4', src:'assets/works/video-poster-01.jpg', title:'精品漫剧 02',           tag:'AI 漫剧 · 视频', orient:'landscape', desc:'AI 漫剧片段，时长 54 秒，点击播放。' },
       { src:'assets/works/paint-01.jpg',  title:'厚涂作品 01',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
       { src:'assets/works/paint-02.jpg',  title:'厚涂作品 02',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
       { src:'assets/works/paint-03.jpg',  title:'厚涂作品 03',        tag:'厚涂 / 插画', orient:'portrait',  desc:'厚涂方向作品，点击可放大查看细节。' },
@@ -34,9 +37,17 @@
     card.dataset.index = i;
     card.setAttribute('tabindex', '0');
     card.setAttribute('aria-label', w.title);
+    const media = (w.type === 'video')
+      ? '<video muted loop playsinline preload="none" poster="' + w.src + '" src="' + w.video + '"></video><span class="play-badge">▶</span>'
+      : '<img loading="lazy" src="' + w.src + '" alt="' + w.title + '" />';
     card.innerHTML =
-      '<div class="work-media"><img loading="lazy" src="' + w.src + '" alt="' + w.title + '" /></div>' +
+      '<div class="work-media">' + media + '</div>' +
       '<div class="work-info"><span class="work-tag">' + w.tag + '</span><h3 class="work-title">' + w.title + '</h3></div>';
+    if (w.type === 'video'){
+      const vid = card.querySelector('video');
+      card.addEventListener('mouseenter', () => { const pr = vid.play(); if (pr && pr.catch) pr.catch(() => {}); });
+      card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+    }
     grid.appendChild(card);
   });
 
@@ -312,6 +323,7 @@
   /* ---------- 灯箱 ---------- */
   const lb = $('#lightbox');
   const lbImg = $('#lbImg');
+  const lbVideo = $('#lbVideo');
   const lbTag = $('#lbTag');
   const lbTitle = $('#lbTitle');
   const lbDesc = $('#lbDesc');
@@ -319,8 +331,18 @@
   function showLb(i){
     lbIndex = (i + WORKS.length) % WORKS.length;
     const w = WORKS[lbIndex];
-    lbImg.src = w.src;
-    lbImg.alt = w.title;
+    if (w.type === 'video'){
+      lbImg.style.display = 'none';
+      lbVideo.style.display = 'block';
+      lbVideo.poster = w.src;
+      lbVideo.src = w.video;
+      const pr = lbVideo.play(); if (pr && pr.catch) pr.catch(() => {});
+    } else {
+      if (lbVideo){ lbVideo.pause(); lbVideo.removeAttribute('src'); lbVideo.style.display = 'none'; }
+      lbImg.style.display = '';
+      lbImg.src = w.src;
+      lbImg.alt = w.title;
+    }
     lbTag.textContent = w.tag;
     lbTitle.textContent = w.title;
     lbDesc.textContent = w.desc;
@@ -328,6 +350,7 @@
     document.body.style.overflow = 'hidden';
   }
   function closeLb(){
+    if (lbVideo) lbVideo.pause();
     lb.classList.remove('open');
     document.body.style.overflow = '';
   }
