@@ -525,3 +525,29 @@ body.ready .hint{opacity:1;transform:none}
   .hero-title .accent{background:none !important;-webkit-background-clip:border-box !important;background-clip:border-box !important;
     -webkit-text-fill-color:#0a7a4a !important;color:#0a7a4a !important;text-shadow:none !important}
 }
+
+/* ---------- 网盘下载入口 ---------- */
+.netdisk{
+  margin-top:clamp(30px,5vh,52px);padding:22px 24px;border-radius:var(--radius);
+  border:1px dashed rgba(63,227,145,.42);
+  background:linear-gradient(180deg,rgba(20,50,36,.35),rgba(255,255,255,.02));
+  display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;text-align:center;
+}
+.netdisk-title{margin:0;color:#cfe6d8;font-size:.95rem}
+.netdisk-btn{
+  display:inline-block;padding:12px 26px;border-radius:99px;font-weight:700;letter-spacing:.06em;
+  color:#062315;background:linear-gradient(100deg,#57efa1,#1cc476);
+  box-shadow:0 10px 26px rgba(28,196,118,.3);transition:.3s;
+}
+.netdisk-btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(28,196,118,.45)}
+.netdisk-pwd{margin:0;color:var(--muted);font-size:.9rem}
+.netdisk-pwd strong{color:var(--green);letter-spacing:.12em}
+
+/* 打印时把网盘链接与提取码完整印出来 */
+@media print{
+  .netdisk{border:1px solid #dbe3dd !important;background:#f7f9f7 !important;break-inside:avoid;page-break-inside:avoid}
+  .netdisk-title{color:#2b332e !important}
+  .netdisk-btn{background:none !important;color:#0a7a4a !important;box-shadow:none !important;padding:0 !important;font-weight:600}
+  .netdisk-btn::after{content:"  " attr(href);font-weight:400;font-size:9pt;color:#2b332e;word-break:break-all}
+  .netdisk-pwd{color:#2b332e !important}
+}
