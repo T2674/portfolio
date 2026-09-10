@@ -8,9 +8,9 @@
   /* ---------- 作品数据：在这里替换/增删你的作品 ---------- */
   const WORKS = [
     { src:'assets/refs/character-line.png',  title:'角色设定 · 黑白线稿',  tag:'角色设计', desc:'从干净的线条开始定义角色：圆框眼镜、利落发型，气质先落在纸上。' },
-    { src:'assets/refs/character-face.png',  title:'角色 · 正面形象参考',  tag:'角色设计', desc:'面向镜头的标准形象：黑框圆眼镜 + 黑色圆领衫，松弛但认真的少年感。' },
-    { src:'assets/refs/character-half.png',  title:'角色 · 半身形象',      tag:'角色 / 头像', desc:'常用半身形象，作为头像与开场角色出现在作品集各处。' },
-    { src:'assets/refs/character-green.png', title:'角色 · 深绿变装 · 片头主视觉', tag:'角色 / 场景', desc:'深绿色调变装版本，在“一卷胶片”开场里担任出镜的演员。' },
+    { src:'assets/refs/character-face.jpg',  title:'角色 · 正面形象参考',  tag:'角色设计', desc:'面向镜头的标准形象：黑框圆眼镜 + 黑色圆领衫，松弛但认真的少年感。' },
+    { src:'assets/refs/character-half.jpg',  title:'角色 · 半身形象',      tag:'角色 / 头像', desc:'常用半身形象，作为头像与开场角色出现在作品集各处。' },
+    { src:'assets/refs/character-green.jpg', title:'角色 · 深绿变装 · 片头主视觉', tag:'角色 / 场景', desc:'深绿色调变装版本，在“一卷胶片”开场里担任出镜的演员。' },
     { src:'assets/refs/ref-02.jpg',          title:'氛围 / 光影参考',      tag:'光影',       desc:'低光氛围参考：暗部里的轮廓与高光，是讲故事时最在意的部分。' },
     { src:'assets/refs/ref-01.jpg',          title:'草图 / 动态参考 01',   tag:'草图',       desc:'动态草图参考之一，捕捉运动瞬间的张力。' },
     { src:'assets/refs/ref-03.jpg',          title:'草图 / 动态参考 02',   tag:'草图',       desc:'动态草图参考之二，练习形体与节奏。' }
@@ -44,7 +44,7 @@
   /* ---------- 预加载（放映前） ---------- */
   const btnOpen = $('#btnOpen');
   const btnText = $('.btn-open-text', btnOpen);
-  const assets = ['assets/refs/character-green.png', 'assets/refs/character-half.png']
+  const assets = ['assets/refs/character-green.jpg', 'assets/refs/character-half.jpg']
     .concat(WORKS.map(w => w.src));
   let loaded = 0;
   const total = assets.length;
