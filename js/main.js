@@ -1,4 +1,4 @@
-/* 推开我的世界 · 一镜到底作品集 */
+/* 一卷胶片 · 一镜到底作品集 */
 'use strict';
 (() => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -10,7 +10,7 @@
     { src:'assets/refs/character-line.png',  title:'角色设定 · 黑白线稿',  tag:'角色设计', desc:'从干净的线条开始定义角色：圆框眼镜、利落发型，气质先落在纸上。' },
     { src:'assets/refs/character-face.png',  title:'角色 · 正面形象参考',  tag:'角色设计', desc:'面向镜头的标准形象：黑框圆眼镜 + 黑色圆领衫，松弛但认真的少年感。' },
     { src:'assets/refs/character-half.png',  title:'角色 · 半身形象',      tag:'角色 / 头像', desc:'常用半身形象，作为头像与开场角色出现在作品集各处。' },
-    { src:'assets/refs/character-green.png', title:'角色 · 深绿变装 · 片头主视觉', tag:'角色 / 场景', desc:'深绿色调变装版本，用于“推开我的世界”片头的门内主视觉。' },
+    { src:'assets/refs/character-green.png', title:'角色 · 深绿变装 · 片头主视觉', tag:'角色 / 场景', desc:'深绿色调变装版本，在“一卷胶片”开场里担任出镜的演员。' },
     { src:'assets/refs/ref-02.jpg',          title:'氛围 / 光影参考',      tag:'光影',       desc:'低光氛围参考：暗部里的轮廓与高光，是讲故事时最在意的部分。' },
     { src:'assets/refs/ref-01.jpg',          title:'草图 / 动态参考 01',   tag:'草图',       desc:'动态草图参考之一，捕捉运动瞬间的张力。' },
     { src:'assets/refs/ref-03.jpg',          title:'草图 / 动态参考 02',   tag:'草图',       desc:'动态草图参考之二，练习形体与节奏。' }
@@ -36,13 +36,12 @@
       '<div class="work-info"><span class="work-tag">' + w.tag + '</span><h3 class="work-title">' + w.title + '</h3></div>';
     grid.appendChild(card);
   });
-  // 占位卡：放入更多项目/视频
   const more = document.createElement('article');
   more.className = 'work-card work-card--more reveal';
   more.innerHTML = '<div class="more-body"><span class="more-plus">＋</span><h3>更多作品位</h3><p>把作品封面放进 assets/works 后，在 main.js 的 WORKS 里加一行即可。</p></div>';
   grid.appendChild(more);
 
-  /* ---------- 预加载（大门开启前） ---------- */
+  /* ---------- 预加载（放映前） ---------- */
   const btnOpen = $('#btnOpen');
   const btnText = $('.btn-open-text', btnOpen);
   const assets = ['assets/refs/character-green.png', 'assets/refs/character-half.png']
@@ -53,7 +52,7 @@
   function tickLoad(){
     loaded++;
     const pct = Math.round(loaded / total * 100);
-    btnText.textContent = '正在加载我的世界… ' + pct + '%';
+    btnText.textContent = '正在装载胶片… ' + pct + '%';
     if (loaded >= total) finishLoad();
   }
   function finishLoad(){
@@ -61,7 +60,7 @@
     setTimeout(() => {
       document.body.classList.add('ready');
       btnOpen.disabled = false;
-      btnText.textContent = '🚪 推开大门';
+      btnText.textContent = '🎞 开始放映';
     }, wait);
   }
   assets.forEach(src => {
@@ -71,47 +70,123 @@
     im.src = src;
   });
 
-  /* ---------- 开门 / 一镜到底入场 ---------- */
-  const stage = $('#doorStage');
-  const posterImg = $('#posterImg');
-  let autoScrolled = false;
-  function openDoor(){
-    if (stage.classList.contains('is-open') || btnOpen.disabled) return;
-    stage.classList.add('is-open');
-    document.body.classList.add('world-open');
-    btnText.textContent = '已推开 · 向下探索 ↓';
-    setTimeout(() => {
-      if (!autoScrolled && window.scrollY < 60){
-        autoScrolled = true;
-        const about = $('#about');
-        about.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-      }
-    }, 1500);
-  }
-  btnOpen.addEventListener('click', openDoor);
-  stage.addEventListener('click', openDoor); // 点击大门也可开启
+  /* ---------- 一卷胶片 · 开场 ---------- */
+  const stage = $('#reelStage');
+  const strip = $('#filmStrip');
+  const viewport = $('.reel-viewport', stage);
+  const caption = $('#reelCaption');
+  const flash = $('#flash');
 
+  // 胶片内容：片头片（倒计时 3·2·1）+ 作品格
+  const spacer = document.createElement('div');
+  spacer.className = 'frame-spacer';
+  strip.appendChild(spacer);
+  [3, 2, 1].forEach(n => {
+    const d = document.createElement('div');
+    d.className = 'frame frame-leader';
+    d.innerHTML = '<span class="leader-num">' + n + '</span>';
+    strip.appendChild(d);
+  });
+  WORKS.forEach((w, i) => {
+    const d = document.createElement('div');
+    d.className = 'frame';
+    d.dataset.index = i;
+    d.innerHTML = '<img loading="lazy" src="' + w.src + '" alt="' + w.title + '" />' +
+                  '<span class="frame-no">' + String(i + 1).padStart(2, '0') + '</span>';
+    strip.appendChild(d);
+  });
+
+  function sizeSpacer(){
+    if (viewport && spacer) spacer.style.width = Math.round(viewport.clientWidth * 0.5) + 'px';
+  }
+  sizeSpacer();
+  window.addEventListener('resize', sizeSpacer);
+
+  const frames = () => $$('.frame', strip);
+  let playing = false, finished = false, rafId = null;
+
+  function resetReel(){
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null; playing = false; finished = false;
+    strip.style.transition = '';
+    strip.style.transform = 'translateY(-50%)';
+    strip.style.opacity = '';
+    frames().forEach(f => f.classList.remove('lit'));
+    stage.classList.remove('is-playing', 'is-end');
+    caption.textContent = '胶片已装填 · 等你按下放映键';
+  }
+
+  function playReel(){
+    if (playing || finished) return;
+    playing = true;
+    stage.classList.add('is-playing');
+
+    const all = frames();
+    const total = Math.max(0, strip.scrollWidth - viewport.clientWidth);
+    const duration = reduceMotion ? 0 : 9500;
+    const start = performance.now();
+    let lastNearest = -1;
+
+    function tick(now){
+      const t = duration ? Math.min(1, (now - start) / duration) : 1;
+      const eased = t * t * (3 - 2 * t);          // 平滑推进
+      strip.style.transform = 'translateY(-50%) translateX(' + (-eased * total) + 'px)';
+
+      // 找最靠近画面中心的胶片格
+      const vp = viewport.getBoundingClientRect();
+      const centerX = vp.left + vp.width / 2;
+      let nearest = -1, best = Infinity;
+      for (let i = 0; i < all.length; i++){
+        const r = all[i].getBoundingClientRect();
+        const d = Math.abs(r.left + r.width / 2 - centerX);
+        if (d < best){ best = d; nearest = i; }
+      }
+      if (nearest !== lastNearest && nearest >= 0){
+        lastNearest = nearest;
+        for (let i = 0; i <= nearest; i++) all[i].classList.add('lit');
+        const f = all[nearest];
+        if (f.classList.contains('frame-leader')){
+          const n = $('.leader-num', f);
+          caption.textContent = '胶片倒数 ' + (n ? n.textContent : '') + ' · 准备放映';
+        } else {
+          const idx = Number(f.dataset.index);
+          caption.textContent = WORKS[idx] ? WORKS[idx].title : '';
+        }
+      }
+
+      if (t < 1){ rafId = requestAnimationFrame(tick); }
+      else { finishReel(); }
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function finishReel(){
+    playing = false; finished = true;
+    stage.classList.add('is-end');
+    strip.style.transition = 'transform 1s var(--ease), opacity .8s ease .15s';
+    strip.style.transform = 'translateY(-50%) scale(.42) rotate(-14deg)';
+    strip.style.opacity = '0';
+    flash.classList.add('on');
+    setTimeout(() => flash.classList.remove('on'), 1000);
+    btnText.textContent = '放映结束 · 进入我的世界 ↓';
+    setTimeout(() => {
+      const about = $('#about');
+      if (about) about.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+    }, 750);
+  }
+
+  btnOpen.addEventListener('click', playReel);
+  viewport.addEventListener('click', playReel);
   $('#btnReplay').addEventListener('click', () => {
-    autoScrolled = false;
     window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
     setTimeout(() => {
-      stage.classList.remove('is-open');
-      document.body.classList.remove('world-open');
-      btnOpen.disabled = false;
-      btnText.textContent = '🚪 推开大门';
+      resetReel();
+      btnText.textContent = '🎞 开始放映';
     }, 650);
   });
 
-  // 门内海报视差（微弱）
-  window.addEventListener('scroll', () => {
-    if (window.scrollY < window.innerHeight && posterImg){
-      posterImg.style.transform = 'translateY(' + window.scrollY * 0.06 + 'px)';
-    }
-  }, { passive:true });
-
   /* ---------- 滚动进度 + 左侧角色 rail ---------- */
   const rail = $('#rail');
-  const railLine = $('.rail-line', rail);
   const railFill = $('#railFill');
   const railMarker = $('#railMarker');
   const railLabel = $('#railLabel');
@@ -119,7 +194,6 @@
   const progressBar = $('#progressBar');
   const hint = $('.hint');
 
-  // 构建 rail 节点
   const lineH = 200;
   const step = lineH / (SECTIONS.length - 1);
   const dots = [];
@@ -268,7 +342,7 @@
   drawStars();
   window.addEventListener('resize', () => { sizeCanvas(); });
 
-  // 初始化一次位置
+  // 初始化
   updateRail();
   updateProgress();
 })();
